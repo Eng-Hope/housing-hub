@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hub/main.dart';
+import 'package:hub/screens/home.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class Login extends StatefulWidget {
@@ -18,6 +19,12 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(onPressed: (){
+          Navigator.push(context, MaterialPageRoute(builder: (context)=> const MyApp())
+          );
+        }, icon: const Icon(Icons.arrow_back),),
+      ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Column(
@@ -69,7 +76,7 @@ class _LoginState extends State<Login> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const MyApp(),
+                      builder: (context) => const Home(),
                     ),
                   );
                   setState(() {
@@ -79,7 +86,6 @@ class _LoginState extends State<Login> {
                   setState(() {
                     isLoading = false;
                   });
-                  print(e);
                 }
               },
               style: ElevatedButton.styleFrom(

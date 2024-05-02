@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hub/Repository/functionalities.dart';
 import 'package:hub/main.dart';
+import 'package:hub/screens/home.dart';
 import 'package:hub/screens/login.dart';
 import 'package:hub/screens/rooms.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -41,6 +42,14 @@ class _HomeDrawerState extends State<HomeDrawer> {
             },
           ),
           ListTile(
+            leading: const Icon(Icons.dashboard),
+            title: const Text('Dashboard'),
+            onTap: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const Home()));
+            },
+          ),
+          ListTile(
             leading: const Icon(Icons.house),
             title: const Text('rooms'),
             onTap: () {
@@ -65,7 +74,6 @@ class _HomeDrawerState extends State<HomeDrawer> {
                   isLoading = false;
                 });
               } catch (e) {
-                print(e);
                 setState(() {
                   isLoading = false;
                 });

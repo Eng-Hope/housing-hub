@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:hub/screens/homedrawer.dart';
+import 'package:hub/Repository/functionalities.dart';
+import 'package:hub/screens/home.dart';
+import 'package:hub/screens/login.dart';
+import 'package:hub/screens/room_request.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 Future<void> main() async {
@@ -21,27 +24,132 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  final User? user = supabase.auth.currentUser;
+String q = "";
   @override
   Widget build(BuildContext context) {
+    final rooms = supabase.from('rooms').select().like('location', '%$q%');
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: const ColorScheme.dark(),
         useMaterial3: true,
         inputDecorationTheme: InputDecorationTheme(
-          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(40),
           ),
         ),
       ),
       home: Scaffold(
-        drawer: const HomeDrawer(),
         appBar: AppBar(
-          title: const Text('Hub'),
+          title: const Text('Rucu Housing Hub'),
+          actions: [
+            Builder(
+              builder: (BuildContext context) {
+                return IconButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              user == null ? const Login() : const Home(),
+                        ),
+                      );
+                    },
+                    icon: const Icon(Icons.login));
+              },
+            )
+          ],
         ),
-        body: const Center(
-          child: Text('home'),
+        body: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 30, left: 20, right: 20, bottom: 10),
+              child: TextField(
+                onChanged: (String? value){
+                  if(value != null){
+                    setState(() {
+                      q = value;
+                    });
+                  }
+                },
+                style: const TextStyle(
+                  fontSize: 18,
+                  color: Colors.white,
+                ),
+                decoration: const InputDecoration(
+                  hintStyle: TextStyle(color: Colors.white),
+                  hintText: 'Search for rooms',
+                  contentPadding: EdgeInsets.symmetric(vertical: 6, horizontal: 20),
+                ),
+              ),
+            ),
+            Expanded(
+              child: FutureBuilder(
+                  future: rooms,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else {
+                      if (!snapshot.hasData) {
+                        return const Center(
+                          child: Text('no data found'),
+                        );
+                      } else if (snapshot.hasError) {
+                        return const Center(
+                          child: Text('an error has occured'),
+                        );
+                      } else {
+                        final data = snapshot.data;
+                        return ListView.builder(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 5, horizontal: 15),
+                            itemCount: data!.length,
+                            itemBuilder: (context, index) {
+                              final room = data[index];
+                              return ListTile(
+                                contentPadding:
+                                    const EdgeInsets.symmetric(vertical: 10),
+                                leading: GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => RoomsDetails(
+                                          roomId: room['id'],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  child: Image.asset(
+                                    'assets/images/room.jpeg',
+                                    height: 100,
+                                  ),
+                                ),
+                                title: Text(
+                                  room['location'],
+                                  style: const TextStyle(
+                                      fontSize: 22,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                subtitle: Text(
+                                  room['price'].toString(),
+                                  style: const TextStyle(fontSize: 15),
+                                ),
+                                trailing: Text(
+                                  room['contact'].toString(),
+                                  style: const TextStyle(fontSize: 17),
+                                ),
+                              );
+                            });
+                      }
+                    }
+                  }),
+            ),
+          ],
         ),
       ),
     );
