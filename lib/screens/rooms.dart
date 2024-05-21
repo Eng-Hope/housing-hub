@@ -3,7 +3,7 @@ import 'package:hub/Repository/functionalities.dart';
 import 'package:hub/screens/add_rooms.dart';
 import 'package:hub/screens/homedrawer.dart';
 import 'package:hub/screens/login.dart';
-import 'package:hub/screens/room_request.dart';
+import 'package:hub/screens/room_widget.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class Rooms extends StatefulWidget {
@@ -79,37 +79,18 @@ class _RoomsState extends State<Rooms> {
                       final data = snapshot.data;
                       return ListView.builder(
                           padding: const EdgeInsets.symmetric(
-                              vertical: 5, horizontal: 15),
+                              vertical: 15, horizontal: 15),
                           itemCount: data!.length,
                           itemBuilder: (context, index) {
                             final room = data[index];
-                            return ListTile(
-                              contentPadding:
-                                  const EdgeInsets.symmetric(vertical: 10),
-                              leading: GestureDetector(
-                                  onTap: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                 RoomsDetails(roomId: room['id'],)));
-                                  },
-                                  child: Image.asset(
-                                    'assets/images/room.jpeg',
-                                    height: 100,
-                                  )),
-                              title: Text(
-                                room['location'],
-                                style: const TextStyle(
-                                    fontSize: 22, fontWeight: FontWeight.bold),
-                              ),
-                              subtitle: Text(
-                                room['price'].toString(),
-                                style: const TextStyle(fontSize: 15),
-                              ),
-                              trailing: Text(
-                                room['contact'].toString(),
-                                style: const TextStyle(fontSize: 17),
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 15),
+                              child: Room(
+                                location: room['location'].toString(),
+                                imageUrl: room['imageUrl'].toString(),
+                                roomStatus: room['status'].toString(),
+                                price: room['price'].toString(),
+                                roomId: room['id'].toString(),
                               ),
                             );
                           });

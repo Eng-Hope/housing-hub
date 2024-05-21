@@ -11,7 +11,7 @@ Future<String> uploadRoomImage(XFile image) async {
   try {
     final String key = const Uuid().v4();
     const String storageDomain =
-        "https://jylqmcgxltifhynbxebv.supabase.co/storage/v1/object/public/";
+        "https://qglhbkwrcpbvunzwucpk.supabase.co/storage/v1/object/public/";
     final String path =
         await supabase.storage.from('images').upload(key, File(image.path));
     publicUrl = '$storageDomain/$path';
@@ -22,7 +22,8 @@ Future<String> uploadRoomImage(XFile image) async {
 }
 
 Future<bool> addRoom(String postCode, String location, String contact,
-    int price, String imageUrl) async {
+    int price, String imageUrl, String electricityAvailability, String waterAvailability,
+    String paymentDuration, String availableRooms, String allowedGender, String roomStatus) async {
   bool isAdded = false;
   try {
     await supabase.from('rooms').insert({
@@ -32,6 +33,13 @@ Future<bool> addRoom(String postCode, String location, String contact,
       'price': price,
       'imageUrl': imageUrl,
       'userId': supabase.auth.currentUser!.id,
+      'electricityAvailability': electricityAvailability,
+      'waterAvailability': waterAvailability,
+      'paymentDuration': paymentDuration,
+      'availableRooms': availableRooms,
+      'allowedGender': allowedGender,
+      'status': roomStatus,
+
     });
     isAdded = true;
   } catch (e) {

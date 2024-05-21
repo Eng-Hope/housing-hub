@@ -3,6 +3,8 @@ import 'package:hub/screens/home.dart';
 import 'package:hub/screens/welcome.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../Repository/functionalities.dart';
+
 class Login extends StatefulWidget {
   const Login({super.key});
 
@@ -11,7 +13,6 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-  final supabase = Supabase.instance.client;
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
   bool isLoading = false;
@@ -105,6 +106,7 @@ class _LoginState extends State<Login> {
                         isLoading = false;
                       });
                     } catch (e) {
+                      print(e);
                       setState(() {
                         isLoading = false;
                       });

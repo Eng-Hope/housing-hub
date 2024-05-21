@@ -1,9 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hub/Repository/functionalities.dart';
-import 'package:hub/screens/home.dart';
-import 'package:hub/screens/login.dart';
-import 'package:hub/screens/room_request.dart';
+import 'package:hub/screens/room_widget.dart';
 import 'package:hub/screens/welcome.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -11,9 +8,9 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Supabase.initialize(
-    url: 'https://jylqmcgxltifhynbxebv.supabase.co',
+    url: 'https://qglhbkwrcpbvunzwucpk.supabase.co',
     anonKey:
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5bHFtY2d4bHRpZmh5bmJ4ZWJ2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTM0NTU4MzIsImV4cCI6MjAyOTAzMTgzMn0.F3VtLhX_8MwjfErDpshdbNUjwnGqskBHFVdC90oJzeE',
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFnbGhia3dyY3BidnVuend1Y3BrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTYxMjQ1NjgsImV4cCI6MjAzMTcwMDU2OH0.R5xc2PNYxZBobez4smwAvB6IBXMC4oRhi1pJAxY01kw',
   );
   runApp(const Welcome());
 }
@@ -27,47 +24,51 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   final User? user = supabase.auth.currentUser;
-String q = "";
+  String q = "";
   @override
   Widget build(BuildContext context) {
-    final rooms = supabase.from('rooms').select().like('location', '%$q%');
-    return  Scaffold(
-        body: Stack(
-          children: <Widget>[
-            Image.asset(
-              'assets/images/background.png',
-              fit: BoxFit.cover,
-              width: double.infinity,
-              height: double.infinity,
-            ),
-            Column(
+    final rooms = supabase.from('rooms').select('id, price, imageUrl, location, status').like('location', '%$q%');
+    return Scaffold(
+      body: Stack(
+        children: <Widget>[
+          Image.asset(
+            'assets/images/background.png',
+            fit: BoxFit.cover,
+            width: double.infinity,
+            height: double.infinity,
+          ),
+          Column(
             children: [
               Padding(
                 padding: const EdgeInsets.only(top: 20, left: 10),
                 child: Align(
                   alignment: Alignment.topLeft,
-                  child:  Builder(
+                  child: Builder(
                     builder: (BuildContext context) {
                       return IconButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                const Welcome(),
-                              ),
-                            );
-                          },
-                          icon: const Icon(Icons.arrow_back, color: Colors.white,),);
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const Welcome(),
+                            ),
+                          );
+                        },
+                        icon: const Icon(
+                          Icons.arrow_back,
+                          color: Colors.white,
+                        ),
+                      );
                     },
-                  ),),
+                  ),
+                ),
               ),
-
               Padding(
-                padding: const EdgeInsets.only(top: 30, left: 20, right: 20, bottom: 10),
+                padding: const EdgeInsets.only(
+                    top: 30, left: 20, right: 20, bottom: 10),
                 child: TextField(
-                  onChanged: (String? value){
-                    if(value != null){
+                  onChanged: (String? value) {
+                    if (value != null) {
                       setState(() {
                         q = value;
                       });
@@ -80,7 +81,8 @@ String q = "";
                   decoration: const InputDecoration(
                     hintStyle: TextStyle(color: Colors.white),
                     hintText: 'Search for rooms',
-                    contentPadding: EdgeInsets.symmetric(vertical: 6, horizontal: 20),
+                    contentPadding:
+                        EdgeInsets.symmetric(vertical: 6, horizontal: 20),
                   ),
                 ),
               ),
@@ -107,38 +109,14 @@ String q = "";
                               itemCount: data!.length,
                               itemBuilder: (context, index) {
                                 final room = data[index];
-                                return ListTile(
-                                  contentPadding:
-                                      const EdgeInsets.symmetric(vertical: 10),
-                                  leading: GestureDetector(
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => RoomsDetails(
-                                            roomId: room['id'],
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                    child: Image.asset(
-                                      'assets/images/room.jpeg',
-                                      height: 100,
-                                    ),
-                                  ),
-                                  title: Text(
-                                    room['location'],
-                                    style: const TextStyle(
-                                        fontSize: 22,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  subtitle: Text(
-                                    room['price'].toString(),
-                                    style: const TextStyle(fontSize: 15),
-                                  ),
-                                  trailing: Text(
-                                    room['contact'].toString(),
-                                    style: const TextStyle(fontSize: 17),
+                                return Padding(
+                                  padding: const EdgeInsets.only(bottom: 15),
+                                  child: Room(
+                                    location: room['location'].toString(),
+                                    imageUrl: room['imageUrl'].toString(),
+                                    roomStatus: room['status'].toString(),
+                                    price: room['price'].toString(),
+                                    roomId: room['id'].toString(),
                                   ),
                                 );
                               });
@@ -148,7 +126,8 @@ String q = "";
               ),
             ],
           ),
-        ],),
-      );
+        ],
+      ),
+    );
   }
 }
