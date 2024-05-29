@@ -48,7 +48,7 @@ class RoomInfo extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(top: 20),
             child: IconButton(onPressed: ()=>{
-              Navigator.of(context),
+              Navigator.pop(context),
             }, icon: const Icon(Icons.arrow_back, color: Colors.white,),),
           ),
           Image.network(imageUrl),

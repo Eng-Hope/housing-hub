@@ -26,7 +26,7 @@ class _MyAppState extends State<MyApp> {
   String q = "";
   @override
   Widget build(BuildContext context) {
-    final rooms = supabase.from('rooms').select('id, price, imageUrl, location, status').like('location', '%$q%');
+    final rooms = supabase.from('rooms').select('id, price, imageUrl, location, status').ilike('location', '%$q%');
     return Scaffold(
       body: Stack(
         children: <Widget>[
