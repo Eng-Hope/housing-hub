@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:hub/LandLoad/screens/room_info_widget.dart';
 import 'package:hub/Repository/functionalities.dart';
-import 'package:hub/screens/room_info_widget.dart';
 class RoomDetails extends StatelessWidget {
   final String roomId;
   const RoomDetails({super.key, required this.roomId});
@@ -9,12 +9,6 @@ class RoomDetails extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: <Widget>[
-          Image.asset(
-            'assets/images/background.png',
-            fit: BoxFit.cover,
-            width: double.infinity,
-            height: double.infinity,
-          ),
           FutureBuilder(
               future: getRoom(roomId),
               builder: (context, AsyncSnapshot<Map<String, dynamic>> snapshot) {
@@ -36,7 +30,7 @@ class RoomDetails extends StatelessWidget {
                       postCode: room['postCode'].toString(),
                       contact: room['contact'].toString(),
                       electricityAvailability:
-                          room['electricityAvailability'].toString(),
+                      room['electricityAvailability'].toString(),
                       waterAvailability: room['waterAvailability'].toString(),
                       paymentDuration: room['paymentDuration'].toString(),
                       availableRooms: room['availableRooms'].toString(),

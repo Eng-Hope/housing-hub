@@ -49,7 +49,7 @@ Future<bool> addRoom(String postCode, String location, String contact,
 }
 
 Future<bool> sendRequest(String fullName, String location, String contacts,
-    String description, String roomId) async {
+    String description, String roomId, String userId) async {
   bool isSent = false;
   try {
     await supabase.from('request').insert({
@@ -58,10 +58,18 @@ Future<bool> sendRequest(String fullName, String location, String contacts,
       'contacts': contacts,
       'roomId': roomId,
       'description': description,
+      'userId': userId,
     });
     isSent = true;
   } catch (e) {
     isSent = false;
   }
   return isSent;
+}
+
+Future<Map<String, dynamic>> getRoom(String roomId) async {
+  return await supabase.from('rooms')
+      .select()
+      .eq('id', roomId)
+      .single();
 }

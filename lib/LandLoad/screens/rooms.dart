@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:hub/LandLoad/screens/room_widget.dart';
 import 'package:hub/Repository/functionalities.dart';
-import 'package:hub/screens/add_rooms.dart';
-import 'package:hub/screens/homedrawer.dart';
-import 'package:hub/screens/login.dart';
-import 'package:hub/screens/room_widget.dart';
+import 'package:hub/LandLoad/screens/homedrawer.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+
+import '../../screens/add_rooms.dart';
+import 'login.dart';
 
 class Rooms extends StatefulWidget {
   const Rooms({super.key});
@@ -16,23 +17,29 @@ class Rooms extends StatefulWidget {
 class _RoomsState extends State<Rooms> {
   final User? user = supabase.auth.currentUser;
 
-  final rooms = supabase
-      .from('rooms')
-      .select()
-      .eq('userId', supabase.auth.currentUser!.id);
-
   @override
   Widget build(BuildContext context) {
     if (user == null) {
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => const Login()));
     }
+    final rooms = supabase
+        .from('rooms')
+        .select()
+        .eq('userId', supabase.auth.currentUser!.id);
     return Scaffold(
       appBar: AppBar(
+        actions: [
+          IconButton(onPressed: ()=>{
+            setState(() {
+            }),
+          }, icon: const Icon(Icons.refresh),),
+        ],
         title: const Text(
           'Rooms',
           style: TextStyle(fontSize: 26),
         ),
+
       ),
       drawer: const HomeDrawer(),
       body: Column(

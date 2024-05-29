@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hub/screens/room_details.dart';
+import 'package:hub/LandLoad/screens/room_details.dart';
 
 class Room extends StatelessWidget {
   final String roomId;

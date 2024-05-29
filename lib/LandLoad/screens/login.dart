@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:hub/screens/home.dart';
 import 'package:hub/screens/welcome.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../Repository/functionalities.dart';
+import '../../../Repository/functionalities.dart';
+import 'home.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});

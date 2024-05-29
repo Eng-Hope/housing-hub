@@ -1,16 +1,16 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hub/Repository/functionalities.dart';
 
-class RoomsDetails extends StatefulWidget {
-  final int roomId;
-  const RoomsDetails({super.key, required this.roomId});
+class RoomsRequests extends StatefulWidget {
+  final String roomId;
+  final String userId;
+  const RoomsRequests({super.key, required this.roomId, required this.userId});
 
   @override
-  State<RoomsDetails> createState() => _RoomsDetailsState();
+  State<RoomsRequests> createState() => _RoomsRequestsState();
 }
 
-class _RoomsDetailsState extends State<RoomsDetails> {
+class _RoomsRequestsState extends State<RoomsRequests> {
   TextEditingController fullName = TextEditingController();
   TextEditingController contact = TextEditingController();
   TextEditingController location = TextEditingController();
@@ -142,7 +142,9 @@ class _RoomsDetailsState extends State<RoomsDetails> {
                               location.text,
                               contact.text,
                               description.text,
-                              widget.roomId.toString());
+                              widget.roomId,
+                              widget.userId
+                          );
                           setState(() {
                             isLoading = false;
                           });

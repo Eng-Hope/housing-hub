@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:hub/Repository/functionalities.dart';
-import 'package:hub/main.dart';
-import 'package:hub/screens/home.dart';
-import 'package:hub/screens/login.dart';
-import 'package:hub/screens/rooms.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+
+import 'home.dart';
+import 'login.dart';
+import 'rooms.dart';
 
 class HomeDrawer extends StatefulWidget {
   const HomeDrawer({super.key});
@@ -38,12 +38,12 @@ class _HomeDrawerState extends State<HomeDrawer> {
             title: const Text('home'),
             onTap: () {
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const MyApp()));
+                  MaterialPageRoute(builder: (context) => const Home()));
             },
           ),
           ListTile(
             leading: const Icon(Icons.dashboard),
-            title: const Text('Dashboard'),
+            title: const Text('Request'),
             onTap: () {
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => const Home()));

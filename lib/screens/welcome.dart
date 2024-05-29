@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:hub/main.dart';
-import 'package:hub/screens/home.dart';
-import 'package:hub/screens/login.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../Repository/functionalities.dart';
+import '../LandLoad/screens/home.dart';
+import '../LandLoad/screens/login.dart';
 
 class Welcome extends StatefulWidget {
   const Welcome({super.key});
