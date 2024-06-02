@@ -39,8 +39,11 @@ class RoomInfo extends StatelessWidget {
     fontSize: 20,
   );
 
+
   @override
   Widget build(BuildContext context) {
+    final double width = MediaQuery.of(context).size.width;
+
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -51,7 +54,14 @@ class RoomInfo extends StatelessWidget {
               Navigator.pop(context),
             }, icon: const Icon(Icons.arrow_back, color: Colors.white,),),
           ),
-          Image.network(imageUrl),
+          Card(
+            color: Colors.white54,
+            child: SizedBox(
+              height: 350,
+              width: width,
+                child: Image.network(imageUrl, fit: BoxFit.fill,),
+            ),
+          ),
           Card(
             color: Colors.white60,
             child: SizedBox(

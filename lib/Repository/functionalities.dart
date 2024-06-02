@@ -21,9 +21,18 @@ Future<String> uploadRoomImage(XFile image) async {
   return publicUrl;
 }
 
-Future<bool> addRoom(String postCode, String location, String contact,
-    int price, String imageUrl, String electricityAvailability, String waterAvailability,
-    String paymentDuration, String availableRooms, String allowedGender, String roomStatus) async {
+Future<bool> addRoom(
+    String postCode,
+    String location,
+    String contact,
+    int price,
+    String imageUrl,
+    String electricityAvailability,
+    String waterAvailability,
+    String paymentDuration,
+    String availableRooms,
+    String allowedGender,
+    String roomStatus) async {
   bool isAdded = false;
   try {
     await supabase.from('rooms').insert({
@@ -39,8 +48,43 @@ Future<bool> addRoom(String postCode, String location, String contact,
       'availableRooms': availableRooms,
       'allowedGender': allowedGender,
       'status': roomStatus,
-
     });
+    isAdded = true;
+  } catch (e) {
+    isAdded = false;
+  }
+  return isAdded;
+}
+
+Future<bool> editRoom(
+    String postCode,
+    String location,
+    String contact,
+    int price,
+    String imageUrl,
+    String electricityAvailability,
+    String waterAvailability,
+    String paymentDuration,
+    String availableRooms,
+    String allowedGender,
+    String roomStatus,
+    String roomId) async {
+  bool isAdded = false;
+  try {
+    await supabase.from('rooms').update({
+      'postCode': postCode,
+      'location': location,
+      'contact': contact,
+      'price': price,
+      'imageUrl': imageUrl,
+      'userId': supabase.auth.currentUser!.id,
+      'electricityAvailability': electricityAvailability,
+      'waterAvailability': waterAvailability,
+      'paymentDuration': paymentDuration,
+      'availableRooms': availableRooms,
+      'allowedGender': allowedGender,
+      'status': roomStatus,
+    }).eq('id', roomId);
     isAdded = true;
   } catch (e) {
     isAdded = false;
@@ -68,8 +112,17 @@ Future<bool> sendRequest(String fullName, String location, String contacts,
 }
 
 Future<Map<String, dynamic>> getRoom(String roomId) async {
-  return await supabase.from('rooms')
-      .select()
-      .eq('id', roomId)
-      .single();
+  return await supabase.from('rooms').select().eq('id', roomId).single();
+}
+
+Future<bool> deleteRoom(String roomId) async {
+  bool isDeleted = false;
+
+  try {
+    await supabase.from('rooms').delete().eq('id', roomId);
+    isDeleted = true;
+  } catch (e) {
+    print(e);
+  }
+  return isDeleted;
 }

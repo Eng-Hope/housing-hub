@@ -1,10 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
-import 'package:flutter/widgets.dart';
-import 'package:hub/screens/room_request.dart';
+import 'package:hub/LandLoad/screens/edit_room.dart';
+import 'package:hub/Repository/functionalities.dart';
+import 'package:hub/screens/rooms.dart';
 
-class RoomInfo extends StatelessWidget {
+class RoomInfo extends StatefulWidget {
   final String postCode;
   final String contact;
   final String price;
@@ -19,7 +18,7 @@ class RoomInfo extends StatelessWidget {
   final String roomStatus;
   final String roomId;
 
-  RoomInfo({
+  const RoomInfo({
     super.key,
     required this.userId,
     required this.postCode,
@@ -35,14 +34,22 @@ class RoomInfo extends StatelessWidget {
     required this.roomId,
     required this.location,
   });
+
+  @override
+  State<RoomInfo> createState() => _RoomInfoState();
+}
+
+class _RoomInfoState extends State<RoomInfo> {
   final TextStyle style = const TextStyle(
     fontWeight: FontWeight.w500,
     fontSize: 20,
   );
 
+  bool isLoading = false;
+
   @override
   Widget build(BuildContext context) {
-    final size  = MediaQuery.of(context).size.width;
+    final size = MediaQuery.of(context).size.width;
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -50,7 +57,11 @@ class RoomInfo extends StatelessWidget {
           SizedBox(
             width: size,
             height: 300,
-            child: Image.network(imageUrl, fit: BoxFit.fill,),),
+            child: Image.network(
+              widget.imageUrl,
+              fit: BoxFit.fill,
+            ),
+          ),
           Card(
             color: Colors.white60,
             child: SizedBox(
@@ -64,70 +75,70 @@ class RoomInfo extends StatelessWidget {
                       height: 15,
                     ),
                     Text(
-                      'Location : $location',
+                      'Location : ${widget.location}',
                       style: style,
                     ),
                     const SizedBox(
                       height: 5,
                     ),
                     Text(
-                      'Post Code : $postCode',
+                      'Post Code : ${widget.postCode}',
                       style: style,
                     ),
                     const SizedBox(
                       height: 5,
                     ),
                     Text(
-                      'Available rooms : $availableRooms',
+                      'Available rooms : ${widget.availableRooms}',
                       style: style,
                     ),
                     const SizedBox(
                       height: 5,
                     ),
                     Text(
-                      'Room Status : $roomStatus',
+                      'Room Status : ${widget.roomStatus}',
                       style: style,
                     ),
                     const SizedBox(
                       height: 5,
                     ),
                     Text(
-                      'Price : $price',
+                      'Price : ${widget.price}',
                       style: style,
                     ),
                     const SizedBox(
                       height: 5,
                     ),
                     Text(
-                      'Payment Duration : $paymentDuration',
+                      'Payment Duration : ${widget.paymentDuration}',
                       style: style,
                     ),
                     const SizedBox(
                       height: 5,
                     ),
                     Text(
-                      'Water : $waterAvailability',
+                      'Water : ${widget.waterAvailability}',
                       style: style,
                     ),
                     const SizedBox(
                       height: 5,
                     ),
                     Text(
-                      'Electricity : $electricityAvailability',
+                      'Electricity : ${widget.electricityAvailability}',
                       style: style,
                     ),
                     const SizedBox(
                       height: 5,
                     ),
                     Text(
-                      'Allowed Gender : $allowedGender',
+                      'Allowed Gender : ${widget.allowedGender}',
                       style: style,
                     ),
                     const SizedBox(
                       height: 5,
                     ),
                     Text(
-                      'Contact : $contact',
+                      'Contact : ${widget.contact}',
                       style: style,
                     ),
                     const SizedBox(
@@ -148,8 +159,21 @@ class RoomInfo extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) =>
-                            RoomsRequests(roomId: roomId, userId: userId),
+                        builder: (context) =>  EditRoom(
+                          userId: widget.userId,
+                          postCode: widget.postCode,
+                          contact: widget.contact,
+                          electricityAvailability: widget.electricityAvailability,
+                          waterAvailability: widget.waterAvailability,
+                          paymentDuration: widget.paymentDuration,
+                          availableRooms: widget.availableRooms,
+                          allowedGender: widget.allowedGender,
+                          roomStatus: widget.roomStatus,
+                          price: widget.price,
+                          imageUrl: widget.imageUrl,
+                          roomId: widget.roomId,
+                          location: widget.location,
+                        ),
                       ),
                     ),
                   },
@@ -160,26 +184,81 @@ class RoomInfo extends StatelessWidget {
                         borderRadius: BorderRadius.circular(3),
                       )),
                   child: const Text(
-                    'Edit',
-                    style: TextStyle(fontSize: 16),
-                  ),
+                          'Edit',
+                          style: TextStyle(fontSize: 16),
+                        ),
                 ),
                 ElevatedButton(
-                  onPressed: () => {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            RoomsRequests(roomId: roomId, userId: userId),
-                      ),
-                    ),
-                  },
                   style: ElevatedButton.styleFrom(
                       foregroundColor: Colors.white,
                       backgroundColor: Colors.blue,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(3),
                       )),
+                  onPressed: () async {
+                    showDialog(context: context, builder: (context){
+                      return  AlertDialog(
+                        title: const Text('Are sure you want to delete this room?'),
+                        content: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(3),
+                                ),),
+                              onPressed: (){
+                                Navigator.pop(context);
+                              }, child: const Icon(Icons.cancel),),
+
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(3),
+                                ),),
+                              onPressed: () async{
+                              setState(() {
+                                isLoading = true;
+                              });
+                              bool isDeleted = await deleteRoom(widget.roomId);
+                              setState(() {
+                                isLoading = false;
+                              });
+                              if (isDeleted == true) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const Rooms(),
+                                  ),
+                                );
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Room deleted successful' , style: TextStyle(
+                                      color: Colors.green,
+                                    ),),
+                                  ),
+                                );
+                              }
+                              else if(isDeleted == false){
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('An error has occurred', style: TextStyle(
+                                      color: Colors.red,
+                                    ),),
+                                  ),
+                                );
+                              }
+                            },  child: isLoading
+                                ? const Center(
+                              child: CircularProgressIndicator(
+                                color: Colors.black,
+                              ),
+                            ) : const Icon(Icons.delete, color: Colors.red,),),
+                          ],
+                        ),
+                      );
+                    });
+                  },
                   child: const Text(
                     'Delete',
                     style: TextStyle(fontSize: 16),
