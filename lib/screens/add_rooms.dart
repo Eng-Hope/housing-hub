@@ -230,7 +230,8 @@ class _AddRoomsState extends State<AddRooms> {
                         waterAvailability.text.isEmpty||
                         paymentDuration.text.isEmpty||
                         availableRooms.text.isEmpty||
-                        roomStatus.text.isEmpty
+                        roomStatus.text.isEmpty||
+                        contact.text.length != 10
                 )
                     ? const Text('fill the form')
                     : ElevatedButton(
